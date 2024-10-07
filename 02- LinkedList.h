@@ -70,67 +70,68 @@ public:
             }
         }
     }
-    void remove_front(){
+    void delete_front(){
         if(!head)return;
         if(head == tail){
-            remove_node(head);
+            delete_node(head);
             head = tail = nullptr;
         }else{
             node* item = head;
             head = head->next;
-            remove_node(item);
+            delete_node(item);
         }
         verify_data_integrity();
     }
-    void remove_end(){
+    void delete_end(){
         if(!head)
             return;
         if(head == tail){
-            remove_front();
+            delete_front();
         }else{
             node* cur = head;
             while (cur->next->next){
                 cur = cur->next;
             }
-            remove_node(tail);
+            delete_node(tail);
             cur->next = nullptr;
             tail = cur;
         }
         verify_data_integrity();
     }
-    void remove_with_key(T val){
-        for (node *cur=head , *prv=nullptr; cur ; prv=cur , cur=cur->next){
-            if(cur->val == val){
-                if(!prv){
-                    remove_front();
-                }else{
-                    prv->next = cur->next;
-                    remove_node(cur);
+    void delete_with_key(T val){
+        if(!length)
+            return;
+        if(head->val == val){
+            delete_front();
+        }else{
+            for (node *cur=head , *prv=nullptr; cur ; prv=cur , cur=cur->next){
+                if(cur->val == val){
+                    delete_next_node(prv);
+                    return;
                 }
-                break;
             }
         }
         verify_data_integrity();
     }
-    void remove_node(node* Node){
+    void delete_node(node* Node){
         assert(Node);
         delete Node;
         --length;
     }
-    void remove_next_node(node* Node){
+    void delete_next_node(node* Node){
         assert(Node);
         node* to_delete = Node->next;
         bool is_tail = to_delete == tail;
         Node->next = to_delete->next;
-        remove_node(to_delete);
+        delete_node(to_delete);
         if(is_tail)
             tail = Node;
     }
-    void remove_even_pos(){
+    void delete_even_pos(){
         if(length<=1)
             return;
         for (node *cur=head->next , *prv=head ; cur ; prv = prv->next , cur = prv->next){
-            remove_next_node(prv);
+            delete_next_node(prv);
             if(!prv->next)
                 break;
         }
@@ -233,7 +234,7 @@ public:
     }
     ~LinkedList(){
         while (head)
-            remove_front();
+            delete_front();
     }
 };
 #endif //LINKEDLIST_H
